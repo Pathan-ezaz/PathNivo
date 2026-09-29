@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Profile — PathNivo</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+
+  <header class="fixed top-0 left-0 right-0 z-40 border-b border-slate-200 bg-white">
+        <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="{{ url_for ('home') }}" class="text-2xl font-bold text-indigo-600">
+                Path<span class="text-slate-900">Nivo</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+
+                <button id="studentMenuButton"
+                    class="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 lg:hidden" aria-label="Open menu">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
+                <div class="hidden items-center gap-3 sm:flex">
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-slate-800">
+                            {{ user.get("name", "Student") }}
+                        </p>
+
+                        <p class="text-xs text-slate-500">
+                            {{ user.get("email", "") }}
+                        </p>
+                    </div>
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
+                        {{ user.name[:2].upper() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <aside class="fixed bottom-0 left-0 top-16 hidden w-64 border-r border-slate-200 bg-white lg:block">
+        <nav class="space-y-2 p-4">
+            <a href="{{ url_for ('dashboard') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>🏠</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for ('roadmap') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>🗺️</span>
+                <span>My Roadmap</span>
+            </a>
+
+            <a href="{{ url_for ('skills') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>🧠</span>
+                <span>My Skills</span>
+            </a>
+
+            <a href="{{ url_for ('courses') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>📚</span>
+                <span>Courses</span>
+            </a>
+
+            <a href="{{ url_for ('projects') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>💻</span>
+                <span>Projects</span>
+            </a>
+
+            <a href="{{ url_for ('progress') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>📈</span>
+                <span>Progress</span>
+            </a>
+
+            <div class="my-5 border-t border-slate-200"></div>
+            <a href="{{ url_for ('profile') }}"
+                class="flex items-center gap-3 rounded-xl bg-indigo-50 px-4 py-3 font-semibold text-indigo-700">
+                <span>👤</span>
+                <span>Profile</span>
+            </a>
+
+            <a href="{{ url_for ('settings') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+
+    <div id="studentSidebarOverlay" class="fixed inset-0 z-40 hidden bg-slate-900/40 lg:hidden"></div>
+
+    <aside id="studentMobileSidebar" class="fixed bottom-0 left-0 top-0 z-50 hidden w-72 bg-white shadow-xl lg:hidden">
+        <div class="flex items-center justify-between border-b border-slate-200 p-5">
+            <a href="{{ url_for ('home') }}" class="text-2xl font-bold text-indigo-600">
+                Path<span class="text-slate-900">Nivo</span>
+            </a>
+
+            <button onclick="closeStudentSidebar()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100">
+                ✕
+            </button>
+        </div>
+
+        <nav class="space-y-2 p-4">
+            <a href="{{ url_for ('dashboard') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                🏠 Dashboard
+            </a>
+
+            <a href="{{ url_for ('roadmap') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                🗺️ My Roadmap
+            </a>
+
+            <a href="{{ url_for ('skills') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                🧠 My Skills
+            </a>
+
+            <a href="{{ url_for ('courses') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                📚 Courses
+            </a>
+
+            <a href="{{ url_for ('projects') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                💻 Projects
+            </a>
+
+            <a href="{{ url_for ('progress') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                📈 Progress
+            </a>
+
+            <div class="my-5 border-t border-slate-200"></div>
+
+            <a href="{{ url_for ('profile') }}"
+                class="block rounded-xl bg-indigo-50 px-4 py-3 font-semibold text-indigo-700">
+                👤 Profile
+            </a>
+
+            <a href="{{ url_for ('settings') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                ⚙️ Settings
+            </a>
+        </nav>
+    </aside>
+
+  <main class="min-h-screen pt-24 lg:ml-64">
+    <div class="mx-auto max-w-5xl px-4 pb-12 sm:px-6 lg:px-8">
+      <div class="mb-8">
+        <p class="mb-2 text-sm font-semibold uppercase tracking-wider text-indigo-600">
+          Account Information
+        </p>
+
+        <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          My Profile
+        </h1>
+
+        <p class="mt-3 text-slate-500">
+          Manage your personal and career information.
+        </p>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="mb-6 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <section class="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-col items-center gap-5 sm:flex-row">
+          <div id="profileAvatar"
+            class="flex h-24 w-24 items-center justify-center rounded-full bg-indigo-100 text-4xl font-bold text-indigo-700">
+            A
+          </div>
+
+          <div class="text-center sm:text-left">
+            <h2 id="profileDisplayName" class="text-2xl font-bold text-slate-900">
+              {{ user.get("name", "Student") }}
+            </h2>
+
+            <p id="profileDisplayEmail" class="mt-1 text-sm text-slate-500">
+              {{ user.get("email", "") }}
+            </p>
+
+            <span class="mt-3 inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+              Student Account
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <form id="profileForm" class="space-y-6" method="POST" action="{{ url_for('update_profile') }}">
+          <div class="grid gap-6 md:grid-cols-2">
+            <div>
+              <label for="fullName" class="mb-2 block text-sm font-semibold text-slate-700">
+                Full Name
+              </label>
+
+              <input id="fullName" name="name" type="text" placeholder="Enter your full name" value="{{ user.get('name', '') }}" readonly
+                      class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"/>
+            </div>
+
+            <div>
+              <label for="email" class="mb-2 block text-sm font-semibold text-slate-700">
+                Email Address
+              </label>
+
+              <input id="email" name="email" type="email" placeholder="Enter your email" value="{{ user.get('email', '') }}" readonly
+                    class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"/>
+            </div>
+
+            <div>
+              <label for="phone" class="mb-2 block text-sm font-medium text-gray-700">
+                  Phone
+              </label>
+
+              <input id="phone" name="phone" type="text" placeholder="Enter Your Number" value="{{ user.get('phone', '') }}"
+                      class="w-full rounded-xl border border-gray-200 px-4 py-3"/>
+            </div>
+
+            <div>
+              <label for="education" class="mb-2 block text-sm font-semibold text-slate-700">
+                Education
+              </label>
+
+              <select id="education" name="education"
+                      class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
+                <option value="">Select education</option>
+                <option value="BCA" {% if user.get('education') == 'BCA' %}selected{% endif %}>
+                  BCA
+                </option>
+
+                <option value="BBA" {% if user.get('education') == 'BBA' %}selected{% endif %}>
+                  BBA
+                </option>
+
+                <option value="B.Tech" {% if user.get('education') == 'B.Tech' %}selected{% endif %}>
+                  B.Tech
+                </option>
+
+                <option value="MCA" {% if user.get('education') == 'MCA' %}selected{% endif %}>
+                  MCA
+                </option>
+
+                <option value="Other" {% if user.get('education') == 'Other' %}selected{% endif %}>
+                  Other
+                </option>
+              </select>
+            </div>
+
+            <div>
+              <label for="studyYear" class="mb-2 block text-sm font-semibold text-slate-700">
+                Current Year
+              </label>
+
+              <select id="studyYear" name="study_year"
+                      class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
+                <option value="">Select year</option>
+                <option value="1st Year" {% if user.get('study_year') == '1st Year' %}selected{% endif %}>
+                  1st Year
+                </option>
+
+                <option value="2nd Year" {% if user.get('study_year') == '2nd Year' %}selected{% endif %}>
+                  2nd Year
+                </option>
+
+                <option value="3rd Year" {% if user.get('study_year') == '3rd Year' %}selected{% endif %}>
+                  3rd Year
+                </option>
+
+                <option value="Final Year" {% if user.get('study_year') == 'Final Year' %}selected{% endif %}>
+                  Final Year
+                </option>
+
+                <option value="Graduated" {% if user.get('study_year') == 'Graduated' %}selected{% endif %}>
+                  Graduated
+                </option>
+              </select>
+            </div>
+
+            <div class="md:col-span-2">
+              <label for="careerGoal" class="mb-2 block text-sm font-semibold text-slate-700">
+                Career Goal
+              </label>
+
+              <input id="careerGoal" name="career_goal" type="text" placeholder="Example: Full Stack Developer" value="{{ user.get('career_goal', '') }}"
+                      class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"/>
+            </div>
+
+            <div class="md:col-span-2">
+              <label for="skillLevel" class="mb-2 block text-sm font-semibold text-slate-700">
+                Current Skill Level
+              </label>
+
+              <select id="skillLevel" name="skill_level"
+                      class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
+                <option value="">Select skill level</option>
+                <option value="Beginner" {% if user.get('skill_level') == 'Beginner' %}selected{% endif %}>
+                  Beginner
+                </option>
+
+                <option value="Intermediate" {% if user.get('skill_level') == 'Intermediate' %}selected{% endif %}>
+                  Intermediate
+                </option>
+
+                <option value="Advanced" {% if user.get('skill_level') == 'Advanced' %}selected{% endif %}>
+                  Advanced
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <p id="profileStatus"
+            class="hidden rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+          </p>
+
+          <div class="flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
+            <button id="resetProfileButton" type="button"
+                  class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50">
+              Reset Profile
+            </button>
+
+            <button type="submit" class="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700">
+              Save Profile
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+  <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+</body>
+</html>

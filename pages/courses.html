@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Courses — PathNivo</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+
+<body class="bg-slate-50 text-slate-800">
+
+    <header class="fixed top-0 left-0 right-0 z-40 border-b border-slate-200 bg-white">
+        <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="{{ url_for ('home') }}" class="text-2xl font-bold text-indigo-600">
+                Path<span class="text-slate-900">Nivo</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+
+                <button id="studentMenuButton"
+                    class="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 lg:hidden" aria-label="Open menu">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
+                <div class="hidden items-center gap-3 sm:flex">
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-slate-800">
+                            {{ user.name }}
+                        </p>
+
+                        <p class="text-xs text-slate-500">
+                            {{ user.get("email", "Student Account") }}
+                        </p>
+                    </div>
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
+                        {{ user.name[:2].upper() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <aside class="fixed bottom-0 left-0 top-16 hidden w-64 border-r border-slate-200 bg-white lg:block">
+        <nav class="space-y-2 p-4">
+            <a href="{{ url_for ('dashboard') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>🏠</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for ('roadmap') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>🗺️</span>
+                <span>My Roadmap</span>
+            </a>
+
+            <a href="{{ url_for ('skills') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>🧠</span>
+                <span>My Skills</span>
+            </a>
+
+            <a href="{{ url_for ('courses') }}"
+                class="flex items-center gap-3 rounded-xl bg-indigo-50 px-4 py-3 font-semibold text-indigo-700">
+                <span>📚</span>
+                <span>Courses</span>
+            </a>
+
+            <a href="{{ url_for ('projects') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>💻</span>
+                <span>Projects</span>
+            </a>
+
+            <a href="{{ url_for ('progress') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>📈</span>
+                <span>Progress</span>
+            </a>
+
+            <div class="my-5 border-t border-slate-200"></div>
+            <a href="{{ url_for ('profile') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>👤</span>
+                <span>Profile</span>
+            </a>
+
+            <a href="{{ url_for ('settings') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+
+    <div id="studentSidebarOverlay" class="fixed inset-0 z-40 hidden bg-slate-900/40 lg:hidden"></div>
+
+    <aside id="studentMobileSidebar" class="fixed bottom-0 left-0 top-0 z-50 hidden w-72 bg-white shadow-xl lg:hidden">
+        <div class="flex items-center justify-between border-b border-slate-200 p-5">
+            <a href="{{ url_for ('home') }}" class="text-2xl font-bold text-indigo-600">
+                Path<span class="text-slate-900">Nivo</span>
+            </a>
+
+            <button onclick="closeStudentSidebar()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100">
+                ✕
+            </button>
+        </div>
+
+        <nav class="space-y-2 p-4">
+            <a href="{{ url_for ('dashboard') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                🏠 Dashboard
+            </a>
+
+            <a href="{{ url_for ('roadmap') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                🗺️ My Roadmap
+            </a>
+
+            <a href="{{ url_for ('skills') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                🧠 My Skills
+            </a>
+
+            <a href="{{ url_for ('courses') }}"
+                class="block rounded-xl bg-indigo-50 px-4 py-3 font-semibold text-indigo-700">
+                📚 Courses
+            </a>
+
+            <a href="{{ url_for ('projects') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                💻 Projects
+            </a>
+
+            <a href="{{ url_for ('progress') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                📈 Progress
+            </a>
+
+            <div class="my-5 border-t border-slate-200"></div>
+            <a href="{{ url_for ('profile') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                👤 Profile
+            </a>
+
+            <a href="{{ url_for ('settings') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                ⚙️ Settings
+            </a>
+        </nav>
+    </aside>
+
+    <main class="lg:ml-64 pt-16 min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <section class="mb-8">
+                <p class="text-sm font-semibold text-indigo-600 mb-2">
+                    LEARNING LIBRARY
+                </p>
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h1 class="text-3xl sm:text-4xl font-bold text-slate-900">
+                        Explore Courses
+                        </h1>
+
+                        <p class="mt-2 text-slate-500">
+                        Choose courses, improve your skills and prepare for your career.
+                        </p>
+                    </div>
+
+                    <a href="{{ url_for ('dashboard') }}"
+                        class="inline-flex justify-center px-5 py-3 rounded-xl bg-white border border-slate-200 text-slate-700 font-semibold hover:bg-slate-100">
+                        ← Dashboard
+                    </a>
+                </div>
+            </section>
+
+            <section class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm mb-8">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">
+                        Course Progress
+                        </h2>
+
+                        <p class="text-sm text-slate-500 mt-1">
+                        Track the courses you have completed.
+                        </p>
+                    </div>
+
+                    <span id="coursesProgressText" class="text-sm font-bold text-indigo-600">
+                        {{ course_progress }}% Completed
+                    </span>
+                </div>
+
+                <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="coursesProgressBar"
+                        class="h-full bg-indigo-600 rounded-full transition-all duration-500"
+                        style="width: {{ course_progress }}%">
+                    </div>
+                </div>
+            </section>
+
+            <section class="flex flex-col md:flex-row gap-4 mb-8">
+                <div class="relative flex-1">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    🔍
+                </span>
+
+                <input id="coursesSearch" type="search" placeholder="Search courses..."
+                    class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500"/>
+                </div>
+
+                <select id="coursesFilter"
+                        class="w-full md:w-56 px-4 py-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="all">All Categories</option>
+                <option value="programming">Programming</option>
+                <option value="frontend">Frontend</option>
+                <option value="backend">Backend</option>
+                <option value="database">Database</option>
+                <option value="career">Career</option>
+                </select>
+            </section>
+
+            <section id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                {% if courses_data %}
+                    {% for course in courses_data %}
+                    <article class="course-card bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm" data-course="{{ course.get('step_id', '') }}" data-category="career">
+                        <div class="h-32 bg-gradient-to-r from-indigo-600 to-purple-600 p-5 text-white">
+                            <div class="text-4xl">📚</div>
+
+                            <p class="text-sm mt-2 opacity-90">
+                                {{ course.get("career", "Career Skill") }}
+                            </p>
+                        </div>
+
+                        <div class="p-5">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-xs font-bold px-3 py-1 rounded-full
+                                    {% if course.get('status') == 'Completed' %}
+                                        bg-green-100 text-green-700
+                                    {% else %}
+                                        bg-indigo-100 text-indigo-700
+                                    {% endif %}">
+                                    {{ course.get("status", "In Progress") }}
+                                </span>
+
+                                <span class="text-xs text-slate-500">
+                                    {{ course.get("progress", 0) }}% Complete
+                                </span>
+                            </div>
+
+                            <h3 class="text-xl font-bold text-slate-900 mt-4">
+                                {{ course.get("title", "Untitled Course") }}
+                            </h3>
+
+                            <p class="text-sm text-slate-500 mt-2">
+                                Learn {{ course.get("title", "this skill") }}
+                                and improve your {{ course.get("career", "career") }} skills.
+                            </p>
+
+                            <div class="mt-4">
+                                <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
+                                    <span>Progress</span>
+
+                                    <span>
+                                        {{ course.get("progress", 0) }}%
+                                    </span>
+                                </div>
+
+                                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-indigo-600 rounded-full transition-all"
+                                            style="width: {{ course.get('progress', 0) }}%;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href="{{ url_for('roadmap') }}"
+                                class="block text-center mt-5 w-full px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold">
+                                {% if course.get("status") == "Completed" %}
+                                    View Roadmap
+                                {% else %}
+                                    Continue Learning
+                                {% endif %}
+                            </a>
+                        </div>
+                    </article>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-span-full text-center bg-white border border-slate-200 rounded-2xl p-8">
+                        <div class="text-4xl mb-3">
+                            📚
+                        </div>
+
+                        <h3 class="text-lg font-bold text-slate-900">
+                            No courses yet
+                        </h3>
+
+                        <p class="text-slate-500 mt-2">
+                            Start a skill from your Roadmap to see it here.
+                        </p>
+
+                        <a href="{{ url_for('roadmap') }}"
+                            class="inline-flex mt-5 px-5 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700">
+                            Go to My Roadmap
+                        </a>
+                    </div>
+                {% endif %}
+            </section>
+
+            <div id="coursesEmptyMessage"
+                class="hidden text-center bg-white border border-slate-200 rounded-2xl p-8 mt-6">
+                <div class="text-4xl mb-3">🔍</div>
+
+                <h3 class="text-lg font-bold text-slate-900">
+                No courses found
+                </h3>
+
+                <p class="text-slate-500 mt-2">
+                Try another course name or category.
+                </p>
+            </div>
+            </div>
+        </main>
+    <script src="{{ url_for('static', filename='js/courses.js') }}"></script>
+</body>
+</html>

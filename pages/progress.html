@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Progress — PathNivo</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+  <header class="fixed top-0 left-0 right-0 z-40 border-b border-slate-200 bg-white">
+        <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="{{ url_for ('home') }}" class="text-2xl font-bold text-indigo-600">
+                Path<span class="text-slate-900">Nivo</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+
+                <button id="studentMenuButton"
+                    class="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 lg:hidden" aria-label="Open menu">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
+                <div class="hidden items-center gap-3 sm:flex">
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-slate-800">
+                            {{ user.name }}
+                        </p>
+
+                        <p class="text-xs text-slate-500">
+                            {{ user.get("email", "Student Account") }}
+                        </p>
+                    </div>
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
+                        {{ user.name[:2].upper() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <aside class="fixed bottom-0 left-0 top-16 hidden w-64 border-r border-slate-200 bg-white lg:block">
+        <nav class="space-y-2 p-4">
+            <a href="{{ url_for ('dashboard') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>🏠</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for ('roadmap') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>🗺️</span>
+                <span>My Roadmap</span>
+            </a>
+
+            <a href="{{ url_for ('skills') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>🧠</span>
+                <span>My Skills</span>
+            </a>
+
+            <a href="{{ url_for ('courses') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>📚</span>
+                <span>Courses</span>
+            </a>
+
+            <a href="{{ url_for ('projects') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>💻</span>
+                <span>Projects</span>
+            </a>
+
+            <a href="{{ url_for ('progress') }}"
+                class="flex items-center gap-3 rounded-xl bg-indigo-50 px-4 py-3 font-semibold text-indigo-700">
+                <span>📈</span>
+                <span>Progress</span>
+            </a>
+
+            <div class="my-5 border-t border-slate-200"></div>
+            <a href="{{ url_for ('profile') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>👤</span>
+                <span>Profile</span>
+            </a>
+
+            <a href="{{ url_for ('settings') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+
+    <div id="studentSidebarOverlay" class="fixed inset-0 z-40 hidden bg-slate-900/40 lg:hidden"></div>
+
+    <aside id="studentMobileSidebar" class="fixed bottom-0 left-0 top-0 z-50 hidden w-72 bg-white shadow-xl lg:hidden">
+        <div class="flex items-center justify-between border-b border-slate-200 p-5">
+            <a href="{{ url_for ('home') }}" class="text-2xl font-bold text-indigo-600">
+                Path<span class="text-slate-900">Nivo</span>
+            </a>
+
+            <button onclick="closeStudentSidebar()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100">
+                ✕
+            </button>
+        </div>
+
+        <nav class="space-y-2 p-4">
+            <a href="{{ url_for ('dashboard') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                🏠 Dashboard
+            </a>
+
+            <a href="{{ url_for ('roadmap') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                🗺️ My Roadmap
+            </a>
+
+            <a href="{{ url_for ('skills') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                🧠 My Skills
+            </a>
+
+            <a href="{{ url_for ('courses') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                📚 Courses
+            </a>
+
+            <a href="{{ url_for ('projects') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                💻 Projects
+            </a>
+
+            <a href="{{ url_for ('progress') }}"
+                class="block rounded-xl bg-indigo-50 px-4 py-3 font-semibold text-indigo-700">
+                📈 Progress
+            </a>
+
+            <div class="my-5 border-t border-slate-200"></div>
+
+            <a href="{{ url_for ('profile') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                👤 Profile
+            </a>
+
+            <a href="{{ url_for ('settings') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                ⚙️ Settings
+            </a>
+        </nav>
+    </aside>
+
+  <main class="min-h-screen pt-24 lg:ml-64">
+    <div class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+      <div class="mb-8">
+        <p class="mb-2 text-sm font-semibold uppercase tracking-wider text-indigo-600">
+          Your Learning Analytics
+        </p>
+
+        <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          Your Progress
+        </h1>
+
+        <p class="mt-3 max-w-2xl text-slate-500">
+          Track your learning journey and see how much you have completed.
+        </p>
+      </div>
+
+      <section class="mb-8 rounded-2xl bg-indigo-600 p-6 text-white shadow-sm sm:p-8">
+        <div class="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+          <div>
+            <p class="text-sm font-medium text-indigo-100">
+              Overall Learning Progress
+            </p>
+
+            <div class="mt-2 flex items-baseline gap-2">
+              <span id="overallProgressText" class="text-5xl font-bold">
+                {{ progress.overall_progress }}%
+              </span>
+
+              <span class="text-sm text-indigo-100">
+                completed
+              </span>
+            </div>
+
+            <p class="mt-3 max-w-md text-sm leading-6 text-indigo-100">
+              Continue completing roadmap steps, skills, courses and projects.
+            </p>
+          </div>
+
+          <div class="flex h-28 w-28 items-center justify-center rounded-full border-8 border-indigo-400 bg-indigo-500 text-center">
+            <span id="overallProgressCircle" class="text-2xl font-bold">
+                {{ progress.overall_progress }}%
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-6 h-3 overflow-hidden rounded-full bg-indigo-400">
+          <div id="overallProgressBar"
+              class="h-full rounded-full bg-white transition-all duration-500"
+              style="width: {{ progress.overall_progress }}%;">
+          </div>
+        </div>
+      </section>
+
+      <section class="grid gap-6 md:grid-cols-2">
+        <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-2xl">
+              🗺️
+            </div>
+
+            <span class="text-sm font-semibold text-indigo-600">
+              Roadmap
+            </span>
+          </div>
+
+          <h2 class="mt-5 text-xl font-bold text-slate-900">
+            {{ progress.roadmap_progress }}
+          </h2>
+
+          <p class="mt-2 text-sm text-slate-500">
+            Complete the steps of your selected career roadmap.
+          </p>
+
+          <div class="mt-5 flex items-center justify-between text-sm">
+              <span class="text-slate-500">Completed</span>
+
+              <span id="roadmapProgressValue" class="font-semibold text-slate-900">
+                  {{ progress.roadmap_completed }} / {{ progress.roadmap_total }}
+              </span>
+          </div>
+
+          <div class="mt-2 h-2 rounded-full bg-slate-100">
+              <div id="roadmapProgressBar"
+                  class="h-full rounded-full bg-indigo-600 transition-all duration-500"
+                  style="width: {{ progress.roadmap_progress }}%;">
+              </div>
+          </div>
+
+          <a href="{{ url_for ('roadmap') }}" class="mt-5 inline-block text-sm font-semibold text-indigo-600 hover:text-indigo-700">
+            View Roadmap →
+          </a>
+        </article>
+
+        <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-2xl">
+              🧠
+            </div>
+
+            <span class="text-sm font-semibold text-emerald-600">
+              Skills
+            </span>
+          </div>
+
+          <h2 class="mt-5 text-xl font-bold text-slate-900">
+            {{ progress.skill_progress }}
+          </h2>
+
+          <p class="mt-2 text-sm text-slate-500">
+            Improve your technical and professional skills.
+          </p>
+
+          <div class="mt-5 flex items-center justify-between text-sm">
+              <span class="text-slate-500">Completed</span>
+
+              <span id="skillsProgressValue" class="font-semibold text-slate-900">
+                  {{ progress.completed_skills }} / {{ progress.total_skills }}
+              </span>
+          </div>
+
+          <div class="mt-2 h-2 rounded-full bg-slate-100">
+              <div id="skillsProgressBar"
+                  class="h-full rounded-full bg-emerald-600 transition-all duration-500"
+                  style="width: {{ progress.skills_progress }}%;">
+              </div>
+          </div>
+
+          <a href="{{ url_for ('skills') }}" class="mt-5 inline-block text-sm font-semibold text-emerald-600 hover:text-emerald-700">
+            View Skills →
+          </a>
+        </article>
+
+        <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100 text-2xl">
+              📚
+            </div>
+
+            <span class="text-sm font-semibold text-orange-600">
+              Courses
+            </span>
+          </div>
+
+          <h2 class="mt-5 text-xl font-bold text-slate-900">
+            {{ progress.course_progress }}
+          </h2>
+
+          <p class="mt-2 text-sm text-slate-500">
+            Track the courses you have completed.
+          </p>
+
+          <div class="mt-5 flex items-center justify-between text-sm">
+              <span class="text-slate-500">Completed</span>
+
+              <span id="coursesProgressValue" class="font-semibold text-slate-900">
+                  {{ progress.completed_courses }} / {{ progress.total_courses }}
+              </span>
+          </div>
+
+          <div class="mt-2 h-2 rounded-full bg-slate-100">
+              <div id="coursesProgressBar"
+                  class="h-full rounded-full bg-orange-600 transition-all duration-500"
+                  style="width: {{ progress.courses_progress }}%;">
+              </div>
+          </div>
+
+          <a href="{{ url_for ('courses') }}" class="mt-5 inline-block text-sm font-semibold text-orange-600 hover:text-orange-700">
+            View Courses →
+          </a>
+        </article>
+
+        <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-pink-100 text-2xl">
+              💻
+            </div>
+
+            <span class="text-sm font-semibold text-pink-600">
+              Projects
+            </span>
+          </div>
+
+          <h2 class="mt-5 text-xl font-bold text-slate-900">
+            {{ progress.project_progress }}
+          </h2>
+
+          <p class="mt-2 text-sm text-slate-500">
+            Build practical projects for your portfolio.
+          </p>
+
+          <div class="mt-5 flex items-center justify-between text-sm">
+              <span class="text-slate-500">Completed</span>
+
+              <span id="projectsProgressValue" class="font-semibold text-slate-900">
+                  {{ progress.completed_projects }} / {{ progress.total_projects }}
+              </span>
+          </div>
+
+          <div class="mt-2 h-2 rounded-full bg-slate-100">
+              <div id="projectsProgressBar"
+                  class="h-full rounded-full bg-pink-600 transition-all duration-500"
+                  style="width: {{ progress.projects_progress }}%;">
+              </div>
+          </div>
+
+          <a href="{{ url_for ('projects') }}" class="mt-5 inline-block text-sm font-semibold text-pink-600 hover:text-pink-700">
+            View Projects →
+          </a>
+        </article>
+      </section>
+
+      <section class="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">
+              Keep Moving Forward 🚀
+            </h2>
+
+            <p class="mt-2 text-sm leading-6 text-slate-500">
+              Consistency is more important than speed. Complete one small task every day.
+            </p>
+          </div>
+
+          <a href="{{ url_for ('dashboard') }}"
+            class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700">
+            Back to Dashboard
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="{{ url_for('static', filename='js/progress.js') }}"></script>
+</body>
+</html>

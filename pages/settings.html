@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Settings — PathNivo</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+  <header class="fixed top-0 left-0 right-0 z-40 border-b border-slate-200 bg-white">
+        <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="{{ url_for ('home') }}" class="text-2xl font-bold text-indigo-600">
+                Path<span class="text-slate-900">Nivo</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <button id="studentMenuButton"
+                    class="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 lg:hidden" aria-label="Open menu">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
+                <div class="hidden items-center gap-3 sm:flex">
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-slate-800">
+                            {{ user.name }}
+                        </p>
+
+                        <p class="text-xs text-slate-500">
+                            {{ user.get("email", "Student Account") }}
+                        </p>
+                    </div>
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
+                        {{ user.name[:2].upper() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <aside class="fixed bottom-0 left-0 top-16 hidden w-64 border-r border-slate-200 bg-white lg:block">
+        <nav class="space-y-2 p-4">
+            <a href="{{ url_for ('dashboard') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>🏠</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for ('roadmap') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>🗺️</span>
+                <span>My Roadmap</span>
+            </a>
+
+            <a href="{{ url_for ('skills') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>🧠</span>
+                <span>My Skills</span>
+            </a>
+
+            <a href="{{ url_for ('courses') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>📚</span>
+                <span>Courses</span>
+            </a>
+
+            <a href="{{ url_for ('projects') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>💻</span>
+                <span>Projects</span>
+            </a>
+
+            <a href="{{ url_for ('progress') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>📈</span>
+                <span>Progress</span>
+            </a>
+
+            <div class="my-5 border-t border-slate-200"></div>
+            <a href="{{ url_for ('profile') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                <span>👤</span>
+                <span>Profile</span>
+            </a>
+
+            <a href="{{ url_for ('settings') }}"
+                class="flex items-center gap-3 rounded-xl bg-indigo-50 px-4 py-3 font-semibold text-indigo-700">
+                <span>⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+
+    <div id="studentSidebarOverlay" class="fixed inset-0 z-40 hidden bg-slate-900/40 lg:hidden"></div>
+
+    <aside id="studentMobileSidebar" class="fixed bottom-0 left-0 top-0 z-50 hidden w-72 bg-white shadow-xl lg:hidden">
+        <div class="flex items-center justify-between border-b border-slate-200 p-5">
+            <a href="{{ url_for ('home') }}" class="text-2xl font-bold text-indigo-600">
+                Path<span class="text-slate-900">Nivo</span>
+            </a>
+
+            <button onclick="closeStudentSidebar()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100">
+                ✕
+            </button>
+        </div>
+
+        <nav class="space-y-2 p-4">
+            <a href="{{ url_for ('dashboard') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                🏠 Dashboard
+            </a>
+
+            <a href="{{ url_for ('roadmap') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                🗺️ My Roadmap
+            </a>
+
+            <a href="{{ url_for ('skills') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                🧠 My Skills
+            </a>
+
+            <a href="{{ url_for ('courses') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                📚 Courses
+            </a>
+
+            <a href="{{ url_for ('projects') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                💻 Projects
+            </a>
+
+            <a href="{{ url_for ('progress') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                📈 Progress
+            </a>
+
+            <div class="my-5 border-t border-slate-200"></div>
+
+            <a href="{{ url_for ('profile') }}"
+                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                👤 Profile
+            </a>
+
+            <a href="{{ url_for ('settings') }}"
+                class="block rounded-xl bg-indigo-50 px-4 py-3 font-semibold text-indigo-700">
+                ⚙️ Settings
+            </a>
+        </nav>
+    </aside>
+
+  <main class="min-h-screen pt-24 lg:ml-64">
+    <div class="mx-auto max-w-4xl px-4 pb-12 sm:px-6 lg:px-8">
+      <div class="mb-8">
+        <p class="mb-2 text-sm font-semibold uppercase tracking-wider text-indigo-600">
+          Preferences
+        </p>
+
+        <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          Settings
+        </h1>
+
+        <p class="mt-3 text-slate-500">
+          Manage your account preferences and learning notifications.
+        </p>
+      </div>
+
+      <section class="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="mb-5">
+          <h2 class="text-xl font-bold text-slate-900">
+            Appearance
+          </h2>
+
+          <p class="mt-1 text-sm text-slate-500">
+            Choose your preferred display mode.
+          </p>
+        </div>
+
+        <label for="themeSelect" class="mb-2 block text-sm font-semibold text-slate-700">
+          Theme
+        </label>
+
+        <select id="themeSelect" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
+          <option value="light">Light Mode</option>
+          <option value="dark">Dark Mode</option>
+        </select>
+      </section>
+
+      <section class="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="mb-5">
+          <h2 class="text-xl font-bold text-slate-900">
+            Notifications
+          </h2>
+
+          <p class="mt-1 text-sm text-slate-500">
+            Control your learning reminders.
+          </p>
+        </div>
+
+        <div class="space-y-5">
+          <label class="flex items-center justify-between gap-4">
+            <div>
+              <p class="text-sm font-semibold text-slate-800">
+                Email Notifications
+              </p>
+
+              <p class="mt-1 text-xs text-slate-500">
+                Receive important account updates.
+              </p>
+            </div>
+
+            <input id="emailNotifications" type="checkbox" class="h-5 w-5 accent-indigo-600"/>
+          </label>
+
+          <div class="border-t border-slate-200"></div>
+          <label class="flex items-center justify-between gap-4">
+            <div>
+              <p class="text-sm font-semibold text-slate-800">
+                Learning Reminder
+              </p>
+
+              <p class="mt-1 text-xs text-slate-500">
+                Get reminders to continue your learning.
+              </p>
+            </div>
+
+            <input id="learningReminder" type="checkbox" class="h-5 w-5 accent-indigo-600"/>
+          </label>
+        </div>
+      </section>
+
+      <section class="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="mb-5">
+          <h2 class="text-xl font-bold text-slate-900">
+            Account
+          </h2>
+
+          <p class="mt-1 text-sm text-slate-500">
+            Manage your account actions.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4 sm:flex-row">
+          <a href="{{ url_for ('profile') }}"
+            class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+            Edit Profile
+          </a>
+
+          <a href="{{ url_for('logout') }}"
+              class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-white">
+              Logout
+          </a>
+        </div>
+      </section>
+
+      <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p id="settingsStatus" class="mb-4 hidden rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700"></p>
+
+        <button id="saveSettingsButton" type="button"
+                class="w-full rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700 sm:w-auto">
+          Save Settings
+        </button>
+      </section>
+    </div>
+  </main>
+  <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+</body>
+</html>

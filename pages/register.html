@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Create Account — PathNivo</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}"/>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-900">
+    <header class="bg-white border-b border-slate-200">
+      <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2">
+          <div class="w-9 h-9 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-bold">
+            P
+          </div>
+          <span class="text-xl font-bold"> PathNivo </span>
+        </a>
+
+        <p class="text-sm text-slate-500 hidden sm:block">
+          Already have an account?
+          <a href="{{ url_for('login') }}" class="text-indigo-600 font-medium hover:text-indigo-700">
+            Login
+          </a>
+        </p>
+      </nav>
+    </header>
+
+    <main class="min-h-[calc(100vh-73px)] flex items-center justify-center px-6 py-12">
+      <div class="w-full max-w-md">
+        <div class="text-center">
+          <div class="mx-auto w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl">
+            🚀
+          </div>
+
+          <h1 class="mt-6 text-3xl font-bold">Create your PathNivo account</h1>
+          <p class="mt-2 text-slate-500">
+            Start building your personalized career path.
+          </p>
+        </div>
+
+        <div class="mt-8 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+            {% if error %}
+            <div class="mb-4 rounded-lg bg-red-100 px-4 py-3 text-sm text-red-700">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            {% if success %}
+            <div class="mb-4 rounded-lg bg-green-100 px-4 py-3 text-sm text-green-700">
+                {{ success }}
+            </div>
+            {% endif %}
+          <form method="POST" action="{{ url_for('register') }}">
+            <div>
+              <label for="registerName" class="block text-sm font-medium text-slate-700 mb-2">
+                Full Name
+              </label>
+
+              <input type="text" id="registerName" name="name" value="{{ request.form.get('name', '')}}" placeholder="Full name" required
+                class="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+
+            <div class="mt-5">
+              <label for="registerEmail" class="block text-sm font-medium text-slate-700 mb-2">
+                Email Address
+              </label>
+
+              <input type="email" id="registerEmail" name="email" value="{{ request.form.get('email', '')}}" placeholder="Email address" required
+                class="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+
+            <div class="mt-5">
+              <label for="registerPassword" class="block text-sm font-medium text-slate-700 mb-2">
+                Password
+              </label>
+
+              <input type="password" id="registerPassword" name="password" placeholder="Password" minlength="8" required
+                class="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+              <p class="mt-2 text-xs text-slate-500">
+                Use at least 8 characters.
+              </p>
+            </div>
+
+            <div class="mt-5">
+              <label for="registerConfirmPassword" class="block text-sm font-medium text-slate-700 mb-2">
+                Confirm Password
+              </label>
+
+              <input type="password" id="registerConfirmPassword" name="confirm_password" placeholder="Confirm password" minlength="8" required
+                class="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+
+            <div class="mt-6 flex items-start gap-3">
+              <input id="terms" name="terms" type="checkbox" required 
+                  class="mt-1 w-4 h-4 accent-indigo-600"/>
+              <label for="terms" class="text-sm text-slate-600">
+                I agree to the
+                <a href="#" class="text-indigo-600 hover:underline">
+                  Terms of Service
+                </a>
+                and
+                <a href="#" class="text-indigo-600 hover:underline">
+                  Privacy Policy 
+                </a>.
+              </label>
+            </div>
+
+            <button type="submit" class="mt-6 w-full py-3 px-4 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition">
+              Create Account
+            </button>
+          </form>
+
+          <div class="flex items-center gap-4 my-6">
+            <div class="flex-1 h-px bg-slate-200"></div>
+            <span class="text-xs text-slate-400"> OR </span>
+            <div class="flex-1 h-px bg-slate-200"></div>
+          </div>
+
+          <p class="text-center text-sm text-slate-500">
+            Already have an account?
+            <a href="{{ url_for('login') }}" class="text-indigo-600 font-semibold hover:text-indigo-700">
+              Login
+            </a>
+          </p>
+        </div>
+
+        <p class="text-center text-xs text-slate-400 mt-6">
+          Your career. Your path.
+        </p>
+      </div>
+    </main>
+    <script src="{{ url_for('static', filename='js/register.js') }}"></script>
+  </body>
+</html>

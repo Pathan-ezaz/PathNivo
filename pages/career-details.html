@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{{ career.title }} — PathNivo</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}" />
+  </head>
+
+<body class="bg-slate-50 text-slate-900">
+    <header class="bg-white border-b border-slate-200">
+      <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="{{ url_for('home') }}" class="flex items-center gap-2">
+          <div class="w-9 h-9 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-bold">
+            P
+          </div>
+          <span class="text-xl font-bold"> PathNivo </span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+          <a href="{{ url_for('careers') }}" class="text-slate-600 hover:text-slate-900">
+            Careers
+          </a>
+
+          <a href="{{ url_for('home') }}#features" class="text-slate-600 hover:text-slate-900">
+            Features
+          </a>
+
+          <a href="{{ url_for('home') }}#about" class="text-slate-600 hover:text-slate-900">
+            About
+          </a>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a href="{{ url_for('login') }}" class="hidden sm:block px-4 py-2 text-sm font-medium text-slate-700">
+            Login
+          </a>
+
+          <a href="{{ url_for('register') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">
+            Get Started
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="max-w-7xl mx-auto px-6 pt-12 pb-10">
+        <a href="{{ url_for('careers') }}" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-indigo-600">
+          ← Back to Careers
+        </a>
+
+        <div class="mt-8 grid lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-2">
+            <div class="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-3xl">
+              {{ career.icon }}
+            </div>
+
+            <span class="inline-block mt-6 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm font-medium">
+              {{ career.category }}
+            </span>
+
+            <h1 class="mt-4 text-4xl md:text-5xl font-bold">
+              {{ career.title }}
+            </h1>
+
+            <p class="mt-5 text-lg text-slate-600 leading-relaxed max-w-2xl">
+              {{ career.description }}
+            </p>
+
+            <div class="flex flex-wrap gap-3 mt-6">
+              {% for skill in career.skills[:4] %}
+                <span class="px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm">
+                  {{ skill }}
+                </span>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm h-fit">
+            <p class="text-sm text-slate-500">Estimated learning path</p>
+            <p class="text-2xl font-bold mt-1">{{ career.duration }}</p>
+
+            <div class="mt-5">
+              <div class="flex justify-between text-sm mb-2">
+                <span class="text-slate-600"> Roadmap steps </span>
+                <span class="font-medium">{{ career.steps }}</span>
+              </div>
+
+              <div class="w-full h-2 bg-slate-100 rounded-full">
+                <div class="w-1/4 h-2 bg-indigo-600 rounded-full"></div>
+              </div>
+            </div>
+
+            <a href="{{ url_for('register') }}" class="block text-center mt-6 w-full px-5 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700">
+              Build My Roadmap →
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-7xl mx-auto px-6 pb-16">
+        <div class="grid lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-2 space-y-8">
+            <div class="bg-white border border-slate-200 rounded-2xl p-7">
+              <h2 class="text-2xl font-bold">About this career</h2>
+
+              <p class="mt-4 text-slate-600 leading-relaxed">
+                {{ career.description }}
+              </p>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-2xl p-7">
+              <h2 class="text-2xl font-bold">Skills you will learn</h2>
+
+              <div class="grid sm:grid-cols-2 gap-4 mt-6">
+                {% for skill in career.skills %}
+                  <div class="p-4 bg-slate-50 rounded-xl">
+                    <p class="font-semibold">{{ skill }}</p>
+
+                    <p class="text-sm text-slate-500 mt-1">
+                      Important skill for this career path.
+                    </p>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="mt-8 space-y-6">
+              {% for step in career.roadmap %}
+                <div class="flex gap-4">
+                  <div class="w-10 h-10 shrink-0 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold">
+                    {{ loop.index }}
+                  </div>
+
+                  <div>
+                    <h3 class="font-semibold">
+                      {{ loop.index }}. {{ step }}
+                    </h3>
+
+                    <p class="text-sm text-slate-500 mt-1">
+                      Follow this step to build your career foundation.
+                    </p>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-2xl p-7">
+              <h2 class="text-2xl font-bold">Practice Projects</h2>
+
+              <p class="mt-2 text-slate-500">
+                Build these projects to improve your practical skills.
+              </p>
+
+              <div class="grid sm:grid-cols-2 gap-4 mt-6">
+                {% for project in career.projects %}
+                  <div class="p-5 bg-slate-50 rounded-xl border border-slate-100">
+                    <h3 class="font-semibold text-slate-800">
+                      {{ project }}
+                    </h3>
+
+                    <p class="text-sm text-slate-500 mt-2">
+                      Add this project to your portfolio after completing it.
+                    </p>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <aside class="space-y-6">
+            <div class="bg-white border border-slate-200 rounded-2xl p-6">
+              <h3 class="font-bold text-lg">Career Snapshot</h3>
+
+              <div class="mt-5 space-y-4">
+                <div class="flex justify-between">
+                  <span class="text-slate-500 text-sm"> Level </span>
+                  <span class="font-medium text-sm">{{ career.level }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span class="text-slate-500 text-sm"> Difficulty </span>
+                  <span class="font-medium text-sm">{{ career.difficulty }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span class="text-slate-500 text-sm"> Focus </span>
+                  <span class="font-medium text-sm">{{ career.focus }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span class="text-slate-500 text-sm"> Projects </span>
+                  <span class="font-medium text-sm">{{ career.projects| length }} Projects</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-indigo-600 text-white rounded-2xl p-6">
+              <h3 class="text-xl font-bold">Ready to start?</h3>
+              <p class="mt-2 text-indigo-100 text-sm leading-relaxed">
+                Create your PathNivo account and get a personalized career
+                roadmap.
+              </p>
+
+              <a href="{{ url_for('register') }}" class="block mt-5 text-center bg-white text-indigo-600 rounded-xl py-3 font-semibold hover:bg-indigo-50">
+                Get Started
+              </a>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white">
+      <div class="max-w-7xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-sm text-slate-500">
+          © 2026 PathNivo. Built for students.
+        </p>
+        <p class="text-sm text-slate-500">Your career. Your path.</p>
+      </div>
+    </footer>
+  </body>
+</html>

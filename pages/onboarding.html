@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Set Up Your Profile — PathNivo</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/CSS/style.css"/>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-900">
+    <header class="bg-white border-b border-slate-200">
+      <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="{{ url_for('home') }}" class="flex items-center gap-2">
+          <div class="w-9 h-9 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-bold">
+            P
+          </div>
+          <span class="text-xl font-bold"> PathNivo </span>
+        </a>
+        <span class="text-sm text-slate-500 hidden sm:block">
+          Step 1 of 4
+        </span>
+      </nav>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-6 py-12">
+      <div class="mb-10">
+        <div class="flex items-center justify-between text-sm mb-2">
+          <span class="font-medium text-slate-700"> Profile Setup </span>
+          <span class="text-slate-500"> 25% </span>
+        </div>
+
+        <div class="w-full h-2 bg-slate-200 rounded-full">
+          <div class="w-1/4 h-2 bg-indigo-600 rounded-full"></div>
+        </div>
+      </div>
+
+      <div class="mb-8">
+        <span class="inline-flex items-center px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm font-medium">
+          Let's get started
+        </span>
+
+        <h1 class="mt-4 text-3xl md:text-4xl font-bold">
+          Tell us about yourself
+        </h1>
+
+        <p class="mt-3 text-slate-500 leading-relaxed">
+          This information will help PathNivo understand your background and
+          create a better career path for you.
+        </p>
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+        <form id="onboardingForm">
+          <div>
+            <label for="onboardingEducation" class="block text-sm font-semibold text-slate-700 mb-2">
+              What is your current education?
+            </label>
+
+            <select id="onboardingEducation" required
+              class="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">Select your education</option>
+              <option value="bca">BCA</option>
+              <option value="bsc">B.Sc</option>
+              <option value="btech">B.Tech</option>
+              <option value="bba">BBA</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="mt-6">
+            <label for="onboardingYear" class="block text-sm font-semibold text-slate-700 mb-2">
+              Current study year
+            </label>
+
+            <select id="onboardingYear" required class="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">Select your year</option>
+              <option value="first">First Year</option>
+              <option value="second">Second Year</option>
+              <option value="third">Third Year</option>
+              <option value="final">Final Year</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+
+          <div class="mt-6">
+            <label class="block text-sm font-semibold text-slate-700 mb-2">
+              What are you interested in?
+            </label>
+
+            <p class="text-sm text-slate-500 mb-4">Select one or more areas.</p>
+            <div class="grid sm:grid-cols-2 gap-3">
+              <label class="cursor-pointer">
+                <input type="checkbox" name="interest" value="web" class="peer sr-only"/>
+                <div class="p-4 border border-slate-200 rounded-xl peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition">
+                  <p class="font-medium">🌐 Web Development</p>
+                  <p class="text-xs text-slate-500 mt-1">
+                    Websites & web applications
+                  </p>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="checkbox" name="interest" value="data" class="peer sr-only"/>
+                <div class="p-4 border border-slate-200 rounded-xl peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition">
+                  <p class="font-medium">📊 Data & Analytics</p>
+                  <p class="text-xs text-slate-500 mt-1">
+                    Data, insights & visualization
+                  </p>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="checkbox" name="interest" value="security" class="peer sr-only"/>
+                <div class="p-4 border border-slate-200 rounded-xl peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition">
+                  <p class="font-medium">🔐 Cybersecurity</p>
+                  <p class="text-xs text-slate-500 mt-1">
+                    Systems & digital security
+                  </p>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="checkbox" name="interest" value="design" class="peer sr-only"/>
+                <div class="p-4 border border-slate-200 rounded-xl peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition">
+                  <p class="font-medium">🎨 UI/UX Design</p>
+                  <p class="text-xs text-slate-500 mt-1">
+                    User interfaces & experiences
+                  </p>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="checkbox" name="interest" value="mobile" class="peer sr-only"/>
+                <div class="p-4 border border-slate-200 rounded-xl peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition">
+                  <p class="font-medium">📱 Mobile Development</p>
+                  <p class="text-xs text-slate-500 mt-1">
+                    Android & mobile applications
+                  </p>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="checkbox" name="interest" value="ai" class="peer sr-only"/>
+                <div class="p-4 border border-slate-200 rounded-xl peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition">
+                  <p class="font-medium">🤖 AI & Machine Learning</p>
+                  <p class="text-xs text-slate-500 mt-1">
+                    AI, ML & intelligent systems
+                  </p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <label for="skills" class="block text-sm font-semibold text-slate-700 mb-2">
+              What skills do you already have?
+            </label>
+
+            <textarea id="skills" rows="4" placeholder="Example: HTML, CSS, JavaScript, Python..."
+              class="w-full px-4 py-3 border border-slate-200 rounded-xl resize-none outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            </textarea>
+
+            <p class="mt-2 text-xs text-slate-500">
+              Don't worry if you're a beginner. You can leave this blank.
+            </p>
+          </div>
+
+          <div class="mt-6">
+            <label for="onboardingCareerGoal" class="block text-sm font-semibold text-slate-700 mb-2">
+              What career do you want to pursue?
+            </label>
+
+            <select id="onboardingCareerGoal" required
+              class="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">Select your target career</option>
+              <option value="python">Python Developer</option>
+              <option value="fullstack">Full Stack Developer</option>
+              <option value="data">Data Analyst</option>
+              <option value="uiux">UI/UX Designer</option>
+              <option value="cybersecurity">Cybersecurity Analyst</option>
+              <option value="mobile">Mobile App Developer</option>
+            </select>
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-slate-200 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4">
+            <a href="{{ url_for('home') }}" class="text-center sm:text-left text-sm font-medium text-slate-500 hover:text-slate-800">
+              ← Back
+            </a>
+
+            <button type="submit" class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition">
+              Continue →
+            </button>
+          </div>
+
+          <p id="onboardingMessage" class="hidden mt-5 text-sm" role="alert"></p>
+        </form>
+      </div>
+
+      <p class="text-center text-xs text-slate-400 mt-6">
+        You can update your profile later from Settings.
+      </p>
+    </main>
+    <script src="{{ url_for('static', filename='js/onboarding.js') }}"></script>
+  </body>
+</html>
