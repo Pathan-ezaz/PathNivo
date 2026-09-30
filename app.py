@@ -3,8 +3,8 @@ import certifi
 import json
 import traceback
 from google import genai
-from google.genai import types
 from functools import wraps
+from google.genai import types
 from flask import (Flask, jsonify, render_template, request, redirect, url_for, session, flash)
 from pymongo import MongoClient
 from werkzeug.security import (generate_password_hash, check_password_hash)
@@ -21,6 +21,28 @@ app = Flask(
     template_folder="pages",
     static_folder="assets"
 )
+
+# ==============================
+# PROFILE PICTURE UPLOAD CONFIG
+# ==============================
+
+PROFILE_UPLOAD_FOLDER = os.path.join(app.static_folder, "uploads", "profile_pictures")
+app.config["PROFILE_UPLOAD_FOLDER"] = PROFILE_UPLOAD_FOLDER
+ALLOWED_PROFILE_EXTENSIONS = {
+    "png",
+    "jpg",
+    "jpeg",
+    "webp"
+}
+
+os.makedirs(PROFILE_UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_profile_picture(filename):
+    return (
+        "." in filename
+        and filename.rsplit(".", 1)[1].lower()
+        in ALLOWED_PROFILE_EXTENSIONS
+    )
 
 app.secret_key = os.getenv(
     "SECRET_KEY",
@@ -2727,6 +2749,85 @@ def update_profile():
     )
 
     flash("Profile updated successfully.","success")
+    return redirect(url_for("profile"))
+
+@app.route("/profile/upload-picture", methods=["POST"])
+@login_required
+def upload_profile_picture():
+    if "profile_picture" not in request.files:
+        flash("Please select a profile picture.", "error")
+        return redirect(url_for("profile"))
+
+    file = request.files["profile_picture"]
+    if file.filename == "":
+        flash("Please select a profile picture.", "error")
+        return redirect(url_for("profile"))
+    if not allowed_profile_picture(file.filename):
+        flash(
+            "Only JPG, JPEG, PNG and WEBP images are allowed.",
+            "error"
+        )
+        return redirect(url_for("profile"))
+    user_id = ObjectId(session["user_id"])
+    user = db.users.find_one({"_id": user_id})
+
+    if not user:
+        session.clear()
+        return redirect(url_for("login"))
+    old_picture = user.get("profile_picture")
+    extension = file.filename.rsplit(".", 1)[1].lower()
+    filename = f"{user_id}.{extension}"
+    filepath = os.path.join(
+        app.config["PROFILE_UPLOAD_FOLDER"],
+        filename
+    )
+    file.save(filepath)
+    if old_picture and old_picture != filename:
+        old_filepath = os.path.join(
+            app.config["PROFILE_UPLOAD_FOLDER"],
+            old_picture
+        )
+
+        if os.path.exists(old_filepath):
+            os.remove(old_filepath)
+
+    db.users.update_one(
+        {"_id": user_id},
+        {"$set": {"profile_picture": filename}}
+    )
+
+    flash(
+        "Profile picture updated successfully.",
+        "success"
+    )
+
+    return redirect(url_for("profile"))
+
+@app.route("/profile/remove-picture", methods=["POST"])
+@login_required
+def remove_profile_picture():
+    user_id = ObjectId(session["user_id"])
+    user = db.users.find_one({"_id": user_id})
+    if not user:
+        session.clear()
+        return redirect(url_for("login"))
+    old_picture = user.get("profile_picture")
+    if old_picture:
+        old_filepath = os.path.join(
+            app.config["PROFILE_UPLOAD_FOLDER"],
+            old_picture
+        )
+        if os.path.exists(old_filepath):
+            os.remove(old_filepath)
+        db.users.update_one(
+            {"_id": user_id},
+            {"$unset": {"profile_picture": ""}}
+        )
+
+    flash(
+        "Profile picture removed.",
+        "success"
+    )
     return redirect(url_for("profile"))
 
 @app.route("/settings")
