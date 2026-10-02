@@ -6,11 +6,8 @@
 
         <title>Roadmap — PathNivo</title>
 
-        <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
-
-        <!-- Common CSS -->
-        <link rel="stylesheet" href="../assets/css/style.css" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
     </head>
 
     <body class="bg-slate-50 text-slate-800">
@@ -39,9 +36,14 @@
                             </p>
                         </div>
 
-                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
-                                {{ user.get("name", "Student")[:2].upper()}}
-                        </div>
+                        {% if user.get("profile_picture") %}
+                            <img src="{{ url_for('static', filename='uploads/profile_pictures/' ~ user.get('profile_picture')) }}"
+                                    alt="Profile Picture" class="h-10 w-10 rounded-full object-cover">
+                        {% else %}
+                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
+                                {{ user.get("name", "Student")[:2].upper() }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -203,13 +205,13 @@
                 </div>
 
                 <span id="roadmapProgressText" class="text-sm font-bold text-indigo-600">
-                0% Completed
+                    0% Completed
                 </span>
             </div>
 
             <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
                 <div id="roadmapProgressBar"
-                    class="h-full bg-indigo-600 rounded-full transition-all duration-500"style="width: 0%"></div>
+                    class="h-full bg-indigo-600 rounded-full transition-all duration-500" style="width: 0%"></div>
             </div>
 
             <div class="flex items-center justify-between mt-3 text-sm text-slate-500">

@@ -3,8 +3,8 @@ import certifi
 import json
 import traceback
 from google import genai
-from functools import wraps
 from google.genai import types
+from functools import wraps
 from flask import (Flask, jsonify, render_template, request, redirect, url_for, session, flash)
 from pymongo import MongoClient
 from werkzeug.security import (generate_password_hash, check_password_hash)
@@ -22,32 +22,35 @@ app = Flask(
     static_folder="assets"
 )
 
-# ==============================
-# PROFILE PICTURE UPLOAD CONFIG
-# ==============================
-
-PROFILE_UPLOAD_FOLDER = os.path.join(app.static_folder, "uploads", "profile_pictures")
-app.config["PROFILE_UPLOAD_FOLDER"] = PROFILE_UPLOAD_FOLDER
-ALLOWED_PROFILE_EXTENSIONS = {
-    "png",
-    "jpg",
-    "jpeg",
-    "webp"
-}
-
-os.makedirs(PROFILE_UPLOAD_FOLDER, exist_ok=True)
-
-def allowed_profile_picture(filename):
-    return (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower()
-        in ALLOWED_PROFILE_EXTENSIONS
-    )
-
 app.secret_key = os.getenv(
     "SECRET_KEY",
     "pathnivo-development-secret-key"
 )
+
+PROFILE_UPLOAD_FOLDER = os.path.join(
+    app.static_folder,
+    "uploads",
+    "profile_pictures"
+)
+
+app.config["PROFILE_UPLOAD_FOLDER"] = PROFILE_UPLOAD_FOLDER
+app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # 5 MB
+
+ALLOWED_PROFILE_EXTENSIONS = {
+    "jpg",
+    "jpeg",
+    "png",
+    "webp"
+}
+
+os.makedirs(PROFILE_UPLOAD_FOLDER, exist_ok=True)
+def allowed_profile_picture(filename):
+    return (
+        bool(filename)
+        and "." in filename
+        and filename.rsplit(".", 1)[1].lower()
+        in ALLOWED_PROFILE_EXTENSIONS
+    )
 
 def login_required(view):
     @wraps(view)
@@ -1888,6 +1891,7 @@ Return only valid JSON matching the requested schema.
         traceback.print_exc()
         print("================================")
         error_text = str(error).upper()
+
         if (
             "429" in error_text
             or "RESOURCE_EXHAUSTED" in error_text
@@ -1956,25 +1960,91 @@ Return only valid JSON matching the requested schema.
 @app.route("/api/roadmap")
 @login_required
 def get_roadmap_data():
-    user = db.users.find_one(
-        {"_id": ObjectId(session["user_id"])}
-    )
-    if not user:
-        return jsonify(
-            {"completed_steps": [], "started_steps": []}
-        )
-    completed_steps = user.get("completed_roadmap_steps", [])
-    started_steps = user.get("started_roadmap_steps", [])
-    if not isinstance(completed_steps, list):
-        completed_steps = []
-    if not isinstance(started_steps, list):
-        started_steps = []
-    return jsonify(
-        {
+    try:
+        user_id = ObjectId(session["user_id"])
+        user = db.users.find_one({"_id": user_id})
+        if not user:
+            return jsonify({
+                "success": True,
+                "career": "",
+                "roadmap": [],
+                "completed_steps": [],
+                "started_steps": []
+            }), 200
+
+        ai_roadmaps = user.get("ai_roadmaps", [])
+        if not isinstance(ai_roadmaps, list):
+            ai_roadmaps = []
+
+        selected_career = str(user.get("selected_career", "")).strip()
+        if not selected_career:
+            return jsonify({
+                "success": True,
+                "career": "",
+                "roadmap": [],
+                "completed_steps": user.get("completed_roadmap_steps", []),
+                "started_steps": user.get("started_roadmap_steps", [])
+            }), 200
+
+        selected_roadmap = None
+        for roadmap in ai_roadmaps:
+            if not isinstance(roadmap, dict):
+                continue
+
+            roadmap_career = str(roadmap.get("career", "")).strip()
+
+            if roadmap_career.lower() == selected_career.lower():
+                selected_roadmap = roadmap
+                break
+
+        if selected_roadmap is None:
+            return jsonify({
+                "success": True,
+                "career": "",
+                "roadmap": [],
+                "completed_steps": user.get("completed_roadmap_steps", []),
+                "started_steps": user.get("started_roadmap_steps", [])
+            }), 200
+
+        roadmap_steps = selected_roadmap.get("roadmap", [])
+        if not isinstance(roadmap_steps, list):
+            roadmap_steps = []
+
+        completed_steps = user.get("completed_roadmap_steps", [])
+        started_steps = user.get("started_roadmap_steps", [])
+
+        if not isinstance(completed_steps, list):
+            completed_steps = []
+
+        if not isinstance(started_steps, list):
+            started_steps = []
+
+        return jsonify({
+            "success": True,
+            "career": selected_career,
+            "roadmap": roadmap_steps,
             "completed_steps": completed_steps,
             "started_steps": started_steps
-        }
-    )
+        }), 200
+
+    except Exception as error:
+
+        print("================================")
+        print("GET ROADMAP ERROR")
+        print("================================")
+        print("ERROR TYPE:", type(error).__name__)
+        print("ERROR:", str(error))
+        traceback.print_exc()
+        print("================================")
+
+        return jsonify({
+            "success": False,
+            "career": "",
+            "roadmap": [],
+            "completed_steps": [],
+            "started_steps": [],
+            "message": "Unable to load roadmap."
+        }), 500
     
 @app.route("/api/roadmap/start", methods=["POST"])
 @login_required
@@ -2629,7 +2699,32 @@ def progress():
     skill_progress = round(
         sum(skill_progress_values) / total_skills
     ) if total_skills else 0
-    course_progress = skill_progress
+    # Calculate course progress separately
+    courses_data = []
+    for skill in valid_skills:
+        courses_data.append({
+            "title": skill.get("title", "Untitled Course"),
+            "progress": skill.get("progress", 0),
+            "status": skill.get("status", "")
+        })
+    total_courses = len(courses_data)
+    completed_courses = sum( 1
+        for course in courses_data
+        if isinstance(course, dict)
+        and (
+            course.get("status") == "Completed"
+            or course.get("progress", 0) >= 100
+        )
+    )
+
+    course_progress = round(
+        sum(
+            course.get("progress", 0)
+            for course in courses_data
+            if isinstance(course, dict)
+        ) / total_courses
+    ) if total_courses else 0
+
     projects_data = user.get("projects", [])
     if not isinstance(projects_data, list):
         projects_data = []
@@ -2691,8 +2786,9 @@ def progress():
         (
             roadmap_progress
             + skill_progress
+            +course_progress
             + project_progress
-        ) / 3
+        ) / 4
     )
     return render_template("progress.html",
     user=user,
@@ -2706,8 +2802,8 @@ def progress():
         "total_roadmap_steps": total_roadmap_steps,
         "total_skills": total_skills,
         "total_projects": total_projects
-    }
-)
+        }
+    )
 
 @app.route("/profile")
 @login_required
@@ -2754,26 +2850,26 @@ def update_profile():
 @app.route("/profile/upload-picture", methods=["POST"])
 @login_required
 def upload_profile_picture():
+    """Upload or replace the logged-in user's profile picture."""
+
     if "profile_picture" not in request.files:
         flash("Please select a profile picture.", "error")
         return redirect(url_for("profile"))
-
     file = request.files["profile_picture"]
-    if file.filename == "":
+    if not file or file.filename == "":
         flash("Please select a profile picture.", "error")
         return redirect(url_for("profile"))
+
     if not allowed_profile_picture(file.filename):
-        flash(
-            "Only JPG, JPEG, PNG and WEBP images are allowed.",
-            "error"
-        )
+        flash("Only JPG, JPEG, PNG and WEBP images are allowed.", "error")
         return redirect(url_for("profile"))
+
     user_id = ObjectId(session["user_id"])
     user = db.users.find_one({"_id": user_id})
-
     if not user:
         session.clear()
         return redirect(url_for("login"))
+
     old_picture = user.get("profile_picture")
     extension = file.filename.rsplit(".", 1)[1].lower()
     filename = f"{user_id}.{extension}"
@@ -2781,54 +2877,59 @@ def upload_profile_picture():
         app.config["PROFILE_UPLOAD_FOLDER"],
         filename
     )
-    file.save(filepath)
+
     if old_picture and old_picture != filename:
         old_filepath = os.path.join(
             app.config["PROFILE_UPLOAD_FOLDER"],
             old_picture
         )
+        if os.path.isfile(old_filepath):
+            try:
+                os.remove(old_filepath)
+            except OSError:
+                pass
 
-        if os.path.exists(old_filepath):
-            os.remove(old_filepath)
-
+    file.save(filepath)
     db.users.update_one(
         {"_id": user_id},
         {"$set": {"profile_picture": filename}}
     )
 
-    flash(
-        "Profile picture updated successfully.",
-        "success"
-    )
-
+    flash("Profile picture updated successfully.", "success")
     return redirect(url_for("profile"))
+
 
 @app.route("/profile/remove-picture", methods=["POST"])
 @login_required
 def remove_profile_picture():
+    """Remove the logged-in user's profile picture."""
     user_id = ObjectId(session["user_id"])
     user = db.users.find_one({"_id": user_id})
     if not user:
         session.clear()
         return redirect(url_for("login"))
+
     old_picture = user.get("profile_picture")
+
     if old_picture:
         old_filepath = os.path.join(
             app.config["PROFILE_UPLOAD_FOLDER"],
             old_picture
         )
-        if os.path.exists(old_filepath):
-            os.remove(old_filepath)
+
+        if os.path.isfile(old_filepath):
+            try:
+                os.remove(old_filepath)
+            except OSError:
+                pass
+
         db.users.update_one(
             {"_id": user_id},
             {"$unset": {"profile_picture": ""}}
         )
-
-    flash(
-        "Profile picture removed.",
-        "success"
-    )
+    flash("Profile picture removed.", "success")
     return redirect(url_for("profile"))
+
 
 @app.route("/settings")
 @login_required

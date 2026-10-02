@@ -1,342 +1,347 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Projects — PathNivo</title>
+    <title>Projects — PathNivo</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  <link rel="stylesheet" href="../assets/css/style.css" />
-</head>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    </head>
 
-<body class="bg-slate-50 text-slate-900">
+    <body class="bg-slate-50 text-slate-900">
 
-  <header class="fixed top-0 left-0 right-0 z-40 border-b border-slate-200 bg-white">
-        <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-            <a href="{{ url_for ('home') }}" class="text-2xl font-bold text-indigo-600">
-                Path<span class="text-slate-900">Nivo</span>
-            </a>
+    <header class="fixed top-0 left-0 right-0 z-40 border-b border-slate-200 bg-white">
+            <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+                <a href="{{ url_for ('home') }}" class="text-2xl font-bold text-indigo-600">
+                    Path<span class="text-slate-900">Nivo</span>
+                </a>
 
-            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3">
 
-                <button id="studentMenuButton"
-                    class="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 lg:hidden" aria-label="Open menu">
+                    <button id="studentMenuButton"
+                        class="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 lg:hidden" aria-label="Open menu">
 
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+
+                    <div class="hidden items-center gap-3 sm:flex">
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-slate-800">
+                                {{ user.name }}
+                            </p>
+
+                            <p class="text-xs text-slate-500">
+                                {{ user.get("email", "Student Account") }}
+                            </p>
+                        </div>
+
+                        {% if user.get("profile_picture") %}
+                        <img src="{{ url_for('static', filename='uploads/profile_pictures/' ~ user.get('profile_picture')) }}"
+                            alt="Profile Picture" class="h-10 w-10 rounded-full object-cover">
+                    {% else %}
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
+                            {{ user.get("name", "Student")[:2].upper() }}
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <aside class="fixed bottom-0 left-0 top-16 hidden w-64 border-r border-slate-200 bg-white lg:block">
+            <nav class="space-y-2 p-4">
+                <a href="{{ url_for ('dashboard') }}"
+                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    <span>🏠</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{{ url_for ('roadmap') }}"
+                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    <span>🗺️</span>
+                    <span>My Roadmap</span>
+                </a>
+
+                <a href="{{ url_for ('skills') }}"
+                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    <span>🧠</span>
+                    <span>My Skills</span>
+                </a>
+
+                <a href="{{ url_for ('courses') }}"
+                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    <span>📚</span>
+                    <span>Courses</span>
+                </a>
+
+                <a href="{{ url_for ('projects') }}"
+                    class="flex items-center gap-3 rounded-xl bg-indigo-50 px-4 py-3 font-semibold text-indigo-700">
+                    <span>💻</span>
+                    <span>Projects</span>
+                </a>
+
+                <a href="{{ url_for ('progress') }}"
+                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    <span>📈</span>
+                    <span>Progress</span>
+                </a>
+
+                <div class="my-5 border-t border-slate-200"></div>
+                <a href="{{ url_for ('profile') }}"
+                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    <span>👤</span>
+                    <span>Profile</span>
+                </a>
+
+                <a href="{{ url_for ('settings') }}"
+                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    <span>⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <div id="studentSidebarOverlay" class="fixed inset-0 z-40 hidden bg-slate-900/40 lg:hidden"></div>
+        <aside id="studentMobileSidebar" class="fixed bottom-0 left-0 top-0 z-50 hidden w-72 bg-white shadow-xl lg:hidden">
+            <div class="flex items-center justify-between border-b border-slate-200 p-5">
+                <a href="{{ url_for ('home') }}" class="text-2xl font-bold text-indigo-600">
+                    Path<span class="text-slate-900">Nivo</span>
+                </a>
+
+                <button onclick="closeStudentSidebar()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100">
+                    ✕
                 </button>
-
-                <div class="hidden items-center gap-3 sm:flex">
-                    <div class="text-right">
-                        <p class="text-sm font-semibold text-slate-800">
-                            {{ user.name }}
-                        </p>
-
-                        <p class="text-xs text-slate-500">
-                            {{ user.get("email", "Student Account") }}
-                        </p>
-                    </div>
-
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
-                        {{ user.name[:2].upper() }}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <aside class="fixed bottom-0 left-0 top-16 hidden w-64 border-r border-slate-200 bg-white lg:block">
-        <nav class="space-y-2 p-4">
-            <a href="{{ url_for ('dashboard') }}"
-                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                <span>🏠</span>
-                <span>Dashboard</span>
-            </a>
-
-            <a href="{{ url_for ('roadmap') }}"
-                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                <span>🗺️</span>
-                <span>My Roadmap</span>
-            </a>
-
-            <a href="{{ url_for ('skills') }}"
-                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                <span>🧠</span>
-                <span>My Skills</span>
-            </a>
-
-            <a href="{{ url_for ('courses') }}"
-                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                <span>📚</span>
-                <span>Courses</span>
-            </a>
-
-            <a href="{{ url_for ('projects') }}"
-                class="flex items-center gap-3 rounded-xl bg-indigo-50 px-4 py-3 font-semibold text-indigo-700">
-                <span>💻</span>
-                <span>Projects</span>
-            </a>
-
-            <a href="{{ url_for ('progress') }}"
-                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                <span>📈</span>
-                <span>Progress</span>
-            </a>
-
-            <div class="my-5 border-t border-slate-200"></div>
-            <a href="{{ url_for ('profile') }}"
-                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                <span>👤</span>
-                <span>Profile</span>
-            </a>
-
-            <a href="{{ url_for ('settings') }}"
-                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                <span>⚙️</span>
-                <span>Settings</span>
-            </a>
-        </nav>
-    </aside>
-
-    <div id="studentSidebarOverlay" class="fixed inset-0 z-40 hidden bg-slate-900/40 lg:hidden"></div>
-    <aside id="studentMobileSidebar" class="fixed bottom-0 left-0 top-0 z-50 hidden w-72 bg-white shadow-xl lg:hidden">
-        <div class="flex items-center justify-between border-b border-slate-200 p-5">
-            <a href="{{ url_for ('home') }}" class="text-2xl font-bold text-indigo-600">
-                Path<span class="text-slate-900">Nivo</span>
-            </a>
-
-            <button onclick="closeStudentSidebar()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100">
-                ✕
-            </button>
-        </div>
-
-        <nav class="space-y-2 p-4">
-            <a href="{{ url_for ('dashboard') }}"
-                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                🏠 Dashboard
-            </a>
-
-            <a href="{{ url_for ('roadmap') }}"
-                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                🗺️ My Roadmap
-            </a>
-
-            <a href="{{ url_for ('skills') }}"
-                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                🧠 My Skills
-            </a>
-
-            <a href="{{ url_for ('courses') }}"
-                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                📚 Courses
-            </a>
-
-            <a href="{{ url_for ('projects') }}"
-                class="block rounded-xl bg-indigo-50 px-4 py-3 font-semibold text-indigo-700">
-                💻 Projects
-            </a>
-
-            <a href="{{ url_for ('progress') }}"
-                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                📈 Progress
-            </a>
-
-            <div class="my-5 border-t border-slate-200"></div>
-            <a href="{{ url_for ('profile') }}"
-                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                👤 Profile
-            </a>
-
-            <a href="{{ url_for ('settings') }}"
-                class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
-                ⚙️ Settings
-            </a>
-        </nav>
-    </aside>
-
-    <main class="min-h-screen pt-24 lg:ml-64">
-        <div class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-        <div class="mb-8">
-            <p class="mb-2 text-sm font-semibold uppercase tracking-wider text-indigo-600">
-            Practical Learning
-            </p>
-
-            <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Build Real Projects
-            </h1>
-
-            <p class="mt-3 max-w-2xl text-slate-500">
-            Practice your skills by building real-world projects and improve your portfolio.
-            </p>
-        </div>
-
-        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <p class="text-sm font-medium text-slate-500">
-                Project Completion
-            </p>
-
-            {% if projects_data %}
-                <div class="mt-2 flex items-end gap-2">
-                    <h2 id="projectsProgressText" class="text-3xl font-bold text-slate-900">
-                        {{ project_progress }}% Completed
-                    </h2>
-
-                    <span class="mb-1 text-sm text-slate-400">
-                        completed
-                    </span>
-                </div>
-
-                <div class="mt-5 h-3 w-full overflow-hidden rounded-full bg-slate-100">
-                    <div id="projectsProgressBar"
-                        class="h-full rounded-full bg-indigo-600 transition-all duration-500"
-                        style="width: {{ project_progress }}%;">
-                    </div>
-                </div>
-            {% else %}
-                <div class="mt-3">
-                    <h2 id="projectsProgressText" class="text-2xl font-bold text-slate-900">
-                        No Projects Yet
-                    </h2>
-
-                    <p class="mt-2 text-sm text-slate-500">
-                        Start a skill from your Roadmap to create your first project.
-                    </p>
-                </div>
-
-                <div class="mt-5 h-3 w-full overflow-hidden rounded-full bg-slate-100">
-                    <div id="projectsProgressBar" class="h-full rounded-full bg-slate-300" style="width: 0%;"></div>
-                </div>
-            {% endif %}
-        </section>
-
-        <section class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div class="relative w-full md:max-w-md">
-            <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                🔍
-            </span>
-
-            <input id="projectsSearch" type="text" placeholder="Search projects..."
-                    class="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"/>
             </div>
 
-            <select id="projectsFilter"
-                    class="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
-            <option value="all">All Categories</option>
-            <option value="frontend">Frontend</option>
-            <option value="backend">Backend</option>
-            <option value="fullstack">Full Stack</option>
-            <option value="practice">Practice</option>
-            </select>
-        </section>
+            <nav class="space-y-2 p-4">
+                <a href="{{ url_for ('dashboard') }}"
+                    class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    🏠 Dashboard
+                </a>
 
-        <section id="projectsGrid" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {% if projects_data %}
-                {% for project in projects_data %}
-                <article class="project-card rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-                            data-project="{{ project.get('title', '')|lower }}" data-category="{{ project.get('category', 'practice')|lower }}">
-                    <div class="mb-5 flex items-start justify-between">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-2xl">
+                <a href="{{ url_for ('roadmap') }}"
+                    class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    🗺️ My Roadmap
+                </a>
+
+                <a href="{{ url_for ('skills') }}"
+                    class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    🧠 My Skills
+                </a>
+
+                <a href="{{ url_for ('courses') }}"
+                    class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    📚 Courses
+                </a>
+
+                <a href="{{ url_for ('projects') }}"
+                    class="block rounded-xl bg-indigo-50 px-4 py-3 font-semibold text-indigo-700">
+                    💻 Projects
+                </a>
+
+                <a href="{{ url_for ('progress') }}"
+                    class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    📈 Progress
+                </a>
+
+                <div class="my-5 border-t border-slate-200"></div>
+                <a href="{{ url_for ('profile') }}"
+                    class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    👤 Profile
+                </a>
+
+                <a href="{{ url_for ('settings') }}"
+                    class="block rounded-xl px-4 py-3 text-slate-600 hover:bg-slate-100">
+                    ⚙️ Settings
+                </a>
+            </nav>
+        </aside>
+
+        <main class="min-h-screen pt-24 lg:ml-64">
+            <div class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <p class="mb-2 text-sm font-semibold uppercase tracking-wider text-indigo-600">
+                Practical Learning
+                </p>
+
+                <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                Build Real Projects
+                </h1>
+
+                <p class="mt-3 max-w-2xl text-slate-500">
+                Practice your skills by building real-world projects and improve your portfolio.
+                </p>
+            </div>
+
+            <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <p class="text-sm font-medium text-slate-500">
+                    Project Completion
+                </p>
+
+                {% if projects_data %}
+                    <div class="mt-2 flex items-end gap-2">
+                        <h2 id="projectsProgressText" class="text-3xl font-bold text-slate-900">
+                            {{ project_progress }}% Completed
+                        </h2>
+
+                        <span class="mb-1 text-sm text-slate-400">
+                            completed
+                        </span>
+                    </div>
+
+                    <div class="mt-5 h-3 w-full overflow-hidden rounded-full bg-slate-100">
+                        <div id="projectsProgressBar"
+                            class="h-full rounded-full bg-indigo-600 transition-all duration-500"
+                            style="width: {{ project_progress }}%;">
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="mt-3">
+                        <h2 id="projectsProgressText" class="text-2xl font-bold text-slate-900">
+                            No Projects Yet
+                        </h2>
+
+                        <p class="mt-2 text-sm text-slate-500">
+                            Start a skill from your Roadmap to create your first project.
+                        </p>
+                    </div>
+
+                    <div class="mt-5 h-3 w-full overflow-hidden rounded-full bg-slate-100">
+                        <div id="projectsProgressBar" class="h-full rounded-full bg-slate-300" style="width: 0%;"></div>
+                    </div>
+                {% endif %}
+            </section>
+
+            <section class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div class="relative w-full md:max-w-md">
+                <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    🔍
+                </span>
+
+                <input id="projectsSearch" type="text" placeholder="Search projects..."
+                        class="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"/>
+                </div>
+
+                <select id="projectsFilter"
+                        class="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
+                <option value="all">All Categories</option>
+                <option value="frontend">Frontend</option>
+                <option value="backend">Backend</option>
+                <option value="fullstack">Full Stack</option>
+                <option value="practice">Practice</option>
+                </select>
+            </section>
+
+            <section id="projectsGrid" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {% if projects_data %}
+                    {% for project in projects_data %}
+                    <article class="project-card rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+                                data-project="{{ project.get('title', '')|lower }}" data-category="{{ project.get('category', 'practice')|lower }}">
+                        <div class="mb-5 flex items-start justify-between">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-2xl">
+                                💻
+                            </div>
+
+                            <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+                                {{ project.get("category", "Practice") }}
+                            </span>
+                        </div>
+
+                        <h2 class="text-xl font-bold text-slate-900">
+                            {{ project.get("title", "Untitled Project") }}
+                        </h2>
+
+                        <p class="mt-2 text-sm leading-6 text-slate-500">
+                            {{ project.get( "description", "Build this project to practice your skills." )  }}
+                        </p>
+
+                        {% if project.get("skills") %}
+                        <div class="mt-5 flex flex-wrap gap-2">
+                            {% for skill in project.get("skills", []) %}
+                            <span class="rounded-md bg-slate-100 px-2 py-1 text-xs text-slate-600">
+                                {{ skill }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="mt-5">
+                            <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
+                                <span>Progress</span>
+                                <span data-project-progress data-project-progress="{{ project.get('progress', 0) }}" >
+                                    {{ project.get("progress", 0) }}%
+                                </span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div data-project-progress-bar
+                                    class="h-full bg-indigo-600 rounded-full transition-all" style="width: {{ project.get('progress', 0) }}%;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" data-project-button data-project-id="{{ project.get('id', '') }}"
+                                class="mt-6 w-full rounded-xl px-4 py-3 text-sm font-semibold transition
+                                    {% if project.get('status') == 'Completed' %}
+                                        bg-green-100 text-green-700 cursor-default
+                                    {% else %}
+                                        bg-indigo-600 text-white hover:bg-indigo-700
+                                    {% endif %}"
+                                {% if project.get('status') == 'Completed' %}
+                                    disabled
+                                {% endif %}>
+                            {% if project.get("status") == "Completed" %}
+                                ✓ Completed
+                            {% elif project.get("progress", 0) > 0 %}
+                                Continue Project
+                            {% else %}
+                                Start Project
+                            {% endif %}
+                        </button>
+                    </article>
+                    {% endfor %}
+                {% else %}
+
+                    <div class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+                        <div class="text-4xl">
                             💻
                         </div>
 
-                        <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
-                            {{ project.get("category", "Practice") }}
-                        </span>
+                        <h3 class="mt-4 text-lg font-bold text-slate-900">
+                            No projects yet
+                        </h3>
+
+                        <p class="mt-2 text-sm text-slate-500">
+                            Start learning a skill from your Roadmap to get relevant projects.
+                        </p>
+
+                        <a href="{{ url_for('roadmap') }}"
+                            class="inline-flex mt-5 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700">
+                            Go to My Roadmap
+                        </a>
                     </div>
-
-                    <h2 class="text-xl font-bold text-slate-900">
-                        {{ project.get("title", "Untitled Project") }}
-                    </h2>
-
-                    <p class="mt-2 text-sm leading-6 text-slate-500">
-                        {{ project.get( "description", "Build this project to practice your skills." )  }}
-                    </p>
-
-                    {% if project.get("skills") %}
-                    <div class="mt-5 flex flex-wrap gap-2">
-                        {% for skill in project.get("skills", []) %}
-                        <span class="rounded-md bg-slate-100 px-2 py-1 text-xs text-slate-600">
-                            {{ skill }}
-                        </span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-
-                    <div class="mt-5">
-                        <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
-                            <span>Progress</span>
-                            <span data-project-progress data-project-progress="{{ project.get('progress', 0) }}" >
-                                {{ project.get("progress", 0) }}%
-                            </span>
-                        </div>
-                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div data-project-progress-bar
-                                class="h-full bg-indigo-600 rounded-full transition-all" style="width: {{ project.get('progress', 0) }}%;">
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="button" data-project-button data-project-id="{{ project.get('id', '') }}"
-                            class="mt-6 w-full rounded-xl px-4 py-3 text-sm font-semibold transition
-                                {% if project.get('status') == 'Completed' %}
-                                    bg-green-100 text-green-700 cursor-default
-                                {% else %}
-                                    bg-indigo-600 text-white hover:bg-indigo-700
-                                {% endif %}"
-                            {% if project.get('status') == 'Completed' %}
-                                disabled
-                            {% endif %}>
-                        {% if project.get("status") == "Completed" %}
-                            ✓ Completed
-                        {% elif project.get("progress", 0) > 0 %}
-                            Continue Project
-                        {% else %}
-                            Start Project
-                        {% endif %}
-                    </button>
+                {% endif %}
                 </article>
-                {% endfor %}
-            {% else %}
+            </section>
 
-                <div class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-                    <div class="text-4xl">
-                        💻
-                    </div>
+            <div id="projectsEmptyMessage"
+                    class="mt-8 hidden rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+                <div class="text-4xl">🔎</div>
 
-                    <h3 class="mt-4 text-lg font-bold text-slate-900">
-                        No projects yet
-                    </h3>
+                <h3 class="mt-4 text-lg font-bold text-slate-900">
+                No projects found
+                </h3>
 
-                    <p class="mt-2 text-sm text-slate-500">
-                        Start learning a skill from your Roadmap to get relevant projects.
-                    </p>
-
-                    <a href="{{ url_for('roadmap') }}"
-                        class="inline-flex mt-5 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700">
-                        Go to My Roadmap
-                    </a>
-                </div>
-            {% endif %}
-            </article>
-        </section>
-
-        <div id="projectsEmptyMessage"
-                class="mt-8 hidden rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-            <div class="text-4xl">🔎</div>
-
-            <h3 class="mt-4 text-lg font-bold text-slate-900">
-            No projects found
-            </h3>
-
-            <p class="mt-2 text-sm text-slate-500">
-            Try another project name or category.
-            </p>
-        </div>
-        </div>
-    </main>
-    <script src="{{ url_for('static', filename='js/projects.js') }}"></script>
-</body>
-</html>
+                <p class="mt-2 text-sm text-slate-500">
+                Try another project name or category.
+                </p>
+            </div>
+            </div>
+        </main>
+        <script src="{{ url_for('static', filename='js/projects.js') }}"></script>
+    </body>
+    </html>

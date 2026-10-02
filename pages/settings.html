@@ -37,9 +37,15 @@
                         </p>
                     </div>
 
+                    {% if user.get("profile_picture") %}
+                    <img src="{{ url_for('static', filename='uploads/profile_pictures/' ~ user.get('profile_picture')) }}"
+                        alt="Profile Picture" class="h-10 w-10 rounded-full object-cover">
+                {% else %}
+
                     <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
-                        {{ user.name[:2].upper() }}
+                        {{ user.get("name", "Student")[:2].upper() }}
                     </div>
+                {% endif %}
                 </div>
             </div>
         </div>
@@ -171,27 +177,6 @@
           Manage your account preferences and learning notifications.
         </p>
       </div>
-
-      <section class="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div class="mb-5">
-          <h2 class="text-xl font-bold text-slate-900">
-            Appearance
-          </h2>
-
-          <p class="mt-1 text-sm text-slate-500">
-            Choose your preferred display mode.
-          </p>
-        </div>
-
-        <label for="themeSelect" class="mb-2 block text-sm font-semibold text-slate-700">
-          Theme
-        </label>
-
-        <select id="themeSelect" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
-          <option value="light">Light Mode</option>
-          <option value="dark">Dark Mode</option>
-        </select>
-      </section>
 
       <section class="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div class="mb-5">

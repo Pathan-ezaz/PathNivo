@@ -39,9 +39,14 @@
                         </p>
                     </div>
 
+                    {% if user.get("profile_picture") %}
+                    <img src="{{ url_for('static', filename='uploads/profile_pictures/' ~ user.get('profile_picture')) }}"
+                        alt="Profile Picture" class="h-10 w-10 rounded-full object-cover">
+                {% else %}
                     <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
-                        {{ user.name[:2].upper() }}
+                        {{ user.get("name", "Student")[:2].upper() }}
                     </div>
+                {% endif %}
                 </div>
             </div>
         </div>

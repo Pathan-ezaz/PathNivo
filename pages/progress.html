@@ -38,9 +38,14 @@
                         </p>
                     </div>
 
+                    {% if user.get("profile_picture") %}
+                    <img src="{{ url_for('static', filename='uploads/profile_pictures/' ~ user.get('profile_picture')) }}"
+                        alt="Profile Picture" class="h-10 w-10 rounded-full object-cover">
+                {% else %}
                     <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
-                        {{ user.name[:2].upper() }}
+                        {{ user.get("name", "Student")[:2].upper() }}
                     </div>
+                {% endif %}
                 </div>
             </div>
         </div>
@@ -223,7 +228,7 @@
           </div>
 
           <h2 class="mt-5 text-xl font-bold text-slate-900">
-            {{ progress.roadmap_progress }}
+            {{ progress.roadmap_progress }}%
           </h2>
 
           <p class="mt-2 text-sm text-slate-500">
@@ -234,7 +239,7 @@
               <span class="text-slate-500">Completed</span>
 
               <span id="roadmapProgressValue" class="font-semibold text-slate-900">
-                  {{ progress.roadmap_completed }} / {{ progress.roadmap_total }}
+                    {{ progress.completed_roadmap_steps }} / {{ progress.total_roadmap_steps }}
               </span>
           </div>
 
@@ -262,7 +267,7 @@
           </div>
 
           <h2 class="mt-5 text-xl font-bold text-slate-900">
-            {{ progress.skill_progress }}
+              {{ progress.skill_progress }}%
           </h2>
 
           <p class="mt-2 text-sm text-slate-500">
@@ -273,14 +278,14 @@
               <span class="text-slate-500">Completed</span>
 
               <span id="skillsProgressValue" class="font-semibold text-slate-900">
-                  {{ progress.completed_skills }} / {{ progress.total_skills }}
+                      {{ progress.skill_progress }}% progress
               </span>
           </div>
 
           <div class="mt-2 h-2 rounded-full bg-slate-100">
               <div id="skillsProgressBar"
                   class="h-full rounded-full bg-emerald-600 transition-all duration-500"
-                  style="width: {{ progress.skills_progress }}%;">
+                  style="width: {{ progress.skill_progress }}%;">
               </div>
           </div>
 
@@ -301,7 +306,7 @@
           </div>
 
           <h2 class="mt-5 text-xl font-bold text-slate-900">
-            {{ progress.course_progress }}
+            {{ progress.course_progress }}%
           </h2>
 
           <p class="mt-2 text-sm text-slate-500">
@@ -312,14 +317,14 @@
               <span class="text-slate-500">Completed</span>
 
               <span id="coursesProgressValue" class="font-semibold text-slate-900">
-                  {{ progress.completed_courses }} / {{ progress.total_courses }}
+                      {{ progress.course_progress }}% progress
               </span>
           </div>
 
           <div class="mt-2 h-2 rounded-full bg-slate-100">
               <div id="coursesProgressBar"
                   class="h-full rounded-full bg-orange-600 transition-all duration-500"
-                  style="width: {{ progress.courses_progress }}%;">
+                  style="width: {{ progress.course_progress }}%;">
               </div>
           </div>
 
@@ -340,7 +345,7 @@
           </div>
 
           <h2 class="mt-5 text-xl font-bold text-slate-900">
-            {{ progress.project_progress }}
+            {{ progress.project_progress }}%
           </h2>
 
           <p class="mt-2 text-sm text-slate-500">
@@ -351,14 +356,14 @@
               <span class="text-slate-500">Completed</span>
 
               <span id="projectsProgressValue" class="font-semibold text-slate-900">
-                  {{ progress.completed_projects }} / {{ progress.total_projects }}
+                  {{ progress.project_progress }}% progress
               </span>
           </div>
 
           <div class="mt-2 h-2 rounded-full bg-slate-100">
               <div id="projectsProgressBar"
                   class="h-full rounded-full bg-pink-600 transition-all duration-500"
-                  style="width: {{ progress.projects_progress }}%;">
+                  style="width: {{ progress.project_progress }}%;">
               </div>
           </div>
 

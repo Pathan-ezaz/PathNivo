@@ -67,16 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
     applyTheme(settings.theme);
   }
 
-  function applyTheme(theme) {
-    if (theme === "dark") {
-      document.body.classList.add("bg-slate-900", "text-black");
-      document.body.classList.remove("bg-slate-50", "text-slate-900");
-    } else {
-      document.body.classList.remove("bg-slate-900", "text-black");
-      document.body.classList.add("bg-slate-50", "text-slate-900");
-    }
-  }
-
   function showStatus(message) {
     if (!settingsStatus) return;
     settingsStatus.textContent = message;

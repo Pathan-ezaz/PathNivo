@@ -26,3 +26,14 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Environment variables
+.env
+.env.*
+
+# Python virtual environment
+venv/
+.venv/
+
+# User uploaded profile pictures
+assets/uploads/profile_pictures/*

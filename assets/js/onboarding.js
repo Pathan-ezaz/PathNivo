@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const skillLevel = skillLevelInput 
         ? skillLevelInput.value
-         : "Beginner";
+        : "Beginner";
 
     const skills = skillsInput
       ? skillsInput.value.trim()
